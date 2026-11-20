@@ -1,121 +1,424 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nexus — Messages & Browser</title>
-  .auth-screen {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  background: var(--bg);
+
+<style>
+:root {
+  --bg:#f5f6f8;
+  --panel:#fff;
+  --ink:#17191f;
+  --muted:#777d89;
+  --line:#e8eaf0;
+  --accent:#525fe1;
+  --soft:#eef0ff;
+}
+
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font:15px Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+}
+
+button,input { font:inherit; }
+button { cursor:pointer; }
+
+/* LOGIN SCREEN */
+
+.auth-screen {
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+  background:var(--bg);
 }
 
 .auth-card {
-  width: 100%;
-  max-width: 410px;
-  background: white;
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 32px;
+  width:100%;
+  max-width:410px;
+  background:white;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:32px;
 }
 
-.auth-card h1 {
-  margin-bottom: 8px;
-}
+.auth-card h1 { margin-bottom:8px; }
 
 .auth-card p {
-  color: var(--muted);
-  line-height: 1.5;
+  color:var(--muted);
+  line-height:1.5;
 }
 
 .auth-card input {
-  width: 100%;
-  padding: 13px;
-  margin: 9px 0;
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  width:100%;
+  padding:13px;
+  margin:9px 0;
+  border:1px solid var(--line);
+  border-radius:10px;
 }
 
 .auth-card button {
-  padding: 12px;
-  border: 0;
-  border-radius: 10px;
-  cursor: pointer;
+  padding:12px;
+  border:0;
+  border-radius:10px;
 }
 
 .auth-submit {
-  width: 100%;
-  background: var(--accent);
-  color: white;
-  margin-top: 12px;
+  width:100%;
+  background:var(--accent);
+  color:white;
+  margin-top:12px;
+}
+
+.auth-submit:disabled {
+  opacity:.6;
+  cursor:wait;
 }
 
 .auth-switch {
-  background: transparent;
-  color: var(--accent);
+  background:transparent;
+  color:var(--accent);
 }
 
 .auth-error {
-  color: #d33;
-  font-size: 13px;
+  color:#d33!important;
+  font-size:13px;
 }
+
+/* MAIN WEBSITE */
+
 .app {
-  display: none;
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:76px 260px 1fr;
 }
-<style>
-:root{--bg:#f5f6f8;--panel:#fff;--ink:#17191f;--muted:#777d89;--line:#e8eaf0;--accent:#525fe1;--soft:#eef0ff}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px Inter,system-ui,-apple-system,Segoe UI,sans-serif}
-button,input{font:inherit}button{cursor:pointer}
-.app{min-height:100vh;display:grid;grid-template-columns:76px 260px 1fr}
-.rail{background:#17191f;color:#fff;padding:20px 12px;display:flex;flex-direction:column;align-items:center;gap:14px}
-.logo{width:42px;height:42px;border-radius:14px;background:#fff;color:#17191f;display:grid;place-items:center;font-weight:800;font-size:20px;margin-bottom:18px}
-.nav{width:46px;height:46px;border:0;border-radius:14px;background:transparent;color:#aeb2bf;font-size:19px}
-.nav.active,.nav:hover{background:#30333d;color:white}
-.sidebar{background:#fff;border-right:1px solid var(--line);padding:25px 18px}
-.brand{font-size:22px;font-weight:800;letter-spacing:-1px;margin-bottom:28px}
-.section-label{font-size:11px;color:#9ba0aa;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;margin:22px 8px 10px}
-.person{display:flex;align-items:center;gap:11px;padding:10px 9px;border-radius:12px;cursor:pointer;margin:3px 0}
-.person:hover,.person.selected{background:#f2f3f7}
-.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#e9eaff;color:#4b56c7;font-weight:700;flex:none}
-.person small{display:block;color:var(--muted);margin-top:3px;font-size:12px}
-.main{min-width:0;padding:28px 34px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}
-h1{font-size:25px;letter-spacing:-.7px;margin:0}
-.muted{color:var(--muted)}
-.pill{border:1px solid var(--line);border-radius:30px;padding:8px 13px;background:white;color:#555;font-size:12px}
-.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:22px}
-.chat-layout{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:18px}
-.chat-panel{height:min(66vh,650px);display:flex;flex-direction:column}
-.chat-head{display:flex;align-items:center;gap:11px;padding-bottom:17px;border-bottom:1px solid var(--line)}
-.chat-head h2{font-size:16px;margin:0}.chat-head p{font-size:12px;margin:4px 0 0;color:var(--muted)}
-.messages{padding:18px 2px;display:flex;flex-direction:column;gap:14px;overflow:auto;flex:1}
-.msg{max-width:75%;display:flex;flex-direction:column;gap:5px}.msg.mine{align-self:flex-end;align-items:flex-end}
-.msg .bubble{background:#f1f2f6;border-radius:14px 14px 14px 4px;padding:11px 14px;line-height:1.45}
-.msg.mine .bubble{background:var(--accent);color:#fff;border-radius:14px 14px 4px 14px}
-.msg small{color:var(--muted);font-size:11px}
-.composer{display:flex;gap:9px;border-top:1px solid var(--line);padding-top:15px}
-.composer input,.searchbar input{min-width:0;flex:1;border:1px solid var(--line);border-radius:12px;padding:12px 14px;outline:none}
-.composer input:focus,.searchbar input:focus{border-color:#a5aaf2}
-.primary{border:0;border-radius:12px;background:var(--accent);color:#fff;padding:0 18px;font-weight:650}
-.side-card h3{font-size:14px;margin:0 0 14px}.side-card p{font-size:13px;line-height:1.6;color:var(--muted)}
-.searchbar{display:flex;gap:9px;margin:20px 0 22px}
-.searchbar button{border:0;background:var(--accent);color:#fff;border-radius:12px;padding:0 18px;font-weight:650}
-.quicklinks{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
-.quicklinks button{background:#fff;border:1px solid var(--line);border-radius:30px;padding:9px 14px;color:#444}
-.browser-note{background:#f7f8fc;border:1px solid var(--line);padding:15px;border-radius:13px;color:#626978;font-size:13px;line-height:1.6}
-.hidden{display:none!important}
-@media(max-width:850px){.app{grid-template-columns:62px 190px 1fr}.main{padding:22px 18px}.chat-layout{grid-template-columns:1fr}.side-card{display:none}}
-@media(max-width:600px){.app{grid-template-columns:56px 1fr}.sidebar{display:none}.main{padding:20px 14px}.chat-panel{height:70vh}.top{align-items:flex-start;gap:10px}}
+
+body:not(.authenticated) .app {
+  display:none;
+}
+
+body.authenticated .auth-screen {
+  display:none;
+}
+
+.rail {
+  background:#17191f;
+  color:#fff;
+  padding:20px 12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;
+}
+
+.logo {
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  background:#fff;
+  color:#17191f;
+  display:grid;
+  place-items:center;
+  font-weight:800;
+  font-size:20px;
+  margin-bottom:18px;
+}
+
+.nav {
+  width:46px;
+  height:46px;
+  border:0;
+  border-radius:14px;
+  background:transparent;
+  color:#aeb2bf;
+  font-size:19px;
+}
+
+.nav.active,.nav:hover {
+  background:#30333d;
+  color:white;
+}
+
+.sidebar {
+  background:#fff;
+  border-right:1px solid var(--line);
+  padding:25px 18px;
+}
+
+.brand {
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:-1px;
+  margin-bottom:28px;
+}
+
+.section-label {
+  font-size:11px;
+  color:#9ba0aa;
+  text-transform:uppercase;
+  letter-spacing:1.2px;
+  font-weight:700;
+  margin:22px 8px 10px;
+}
+
+.person {
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:10px 9px;
+  border-radius:12px;
+  cursor:pointer;
+  margin:3px 0;
+}
+
+.person:hover,.person.selected {
+  background:#f2f3f7;
+}
+
+.avatar {
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:#e9eaff;
+  color:#4b56c7;
+  font-weight:700;
+  flex:none;
+}
+
+.person small {
+  display:block;
+  color:var(--muted);
+  margin-top:3px;
+  font-size:12px;
+}
+
+.main {
+  min-width:0;
+  padding:28px 34px;
+}
+
+.top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:26px;
+}
+
+h1 {
+  font-size:25px;
+  letter-spacing:-.7px;
+  margin:0;
+}
+
+.muted { color:var(--muted); }
+
+.pill {
+  border:1px solid var(--line);
+  border-radius:30px;
+  padding:8px 13px;
+  background:white;
+  color:#555;
+  font-size:12px;
+}
+
+.panel {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:22px;
+}
+
+.chat-layout {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 230px;
+  gap:18px;
+}
+
+.chat-panel {
+  height:min(66vh,650px);
+  display:flex;
+  flex-direction:column;
+}
+
+.chat-head {
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding-bottom:17px;
+  border-bottom:1px solid var(--line);
+}
+
+.chat-head h2 {
+  font-size:16px;
+  margin:0;
+}
+
+.chat-head p {
+  font-size:12px;
+  margin:4px 0 0;
+  color:var(--muted);
+}
+
+.messages {
+  padding:18px 2px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  overflow:auto;
+  flex:1;
+}
+
+.msg {
+  max-width:75%;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.msg.mine {
+  align-self:flex-end;
+  align-items:flex-end;
+}
+
+.msg .bubble {
+  background:#f1f2f6;
+  border-radius:14px 14px 14px 4px;
+  padding:11px 14px;
+  line-height:1.45;
+}
+
+.msg.mine .bubble {
+  background:var(--accent);
+  color:#fff;
+  border-radius:14px 14px 4px 14px;
+}
+
+.msg small {
+  color:var(--muted);
+  font-size:11px;
+}
+
+.composer {
+  display:flex;
+  gap:9px;
+  border-top:1px solid var(--line);
+  padding-top:15px;
+}
+
+.composer input,.searchbar input {
+  min-width:0;
+  flex:1;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px 14px;
+  outline:none;
+}
+
+.composer input:focus,.searchbar input:focus {
+  border-color:#a5aaf2;
+}
+
+.primary {
+  border:0;
+  border-radius:12px;
+  background:var(--accent);
+  color:#fff;
+  padding:0 18px;
+  font-weight:650;
+}
+
+.side-card h3 {
+  font-size:14px;
+  margin:0 0 14px;
+}
+
+.side-card p {
+  font-size:13px;
+  line-height:1.6;
+  color:var(--muted);
+}
+
+.searchbar {
+  display:flex;
+  gap:9px;
+  margin:20px 0 22px;
+}
+
+.searchbar button {
+  border:0;
+  background:var(--accent);
+  color:#fff;
+  border-radius:12px;
+  padding:0 18px;
+  font-weight:650;
+}
+
+.quicklinks {
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:16px;
+}
+
+.quicklinks button {
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:30px;
+  padding:9px 14px;
+  color:#444;
+}
+
+.browser-note {
+  background:#f7f8fc;
+  border:1px solid var(--line);
+  padding:15px;
+  border-radius:13px;
+  color:#626978;
+  font-size:13px;
+  line-height:1.6;
+}
+
+.hidden { display:none!important; }
+
+@media(max-width:850px) {
+  .app {
+    grid-template-columns:62px 190px 1fr;
+  }
+  .main { padding:22px 18px; }
+  .chat-layout { grid-template-columns:1fr; }
+  .side-card { display:none; }
+}
+
+@media(max-width:600px) {
+  .app { grid-template-columns:56px 1fr; }
+  .sidebar { display:none; }
+  .main { padding:20px 14px; }
+  .chat-panel { height:70vh; }
+  .top { align-items:flex-start; gap:10px; }
+}
 </style>
 </head>
+
 <body>
-  <div class="auth-screen" id="authScreen">
+
+<!-- LOGIN AND REGISTRATION -->
+
+<div class="auth-screen" id="authScreen">
   <div class="auth-card">
     <h1>nexus<span style="color:var(--accent)">.</span></h1>
-    <p id="authDescription">Welcome back! Log in to your account.</p>
+
+    <p id="authDescription">
+      Welcome back! Log in to your account.
+    </p>
 
     <form id="authForm">
       <input
@@ -124,6 +427,7 @@ h1{font-size:25px;letter-spacing:-.7px;margin:0}
         minlength="3"
         maxlength="20"
         pattern="[a-zA-Z0-9_]+"
+        autocomplete="username"
         required
       >
 
@@ -132,6 +436,7 @@ h1{font-size:25px;letter-spacing:-.7px;margin:0}
         type="password"
         placeholder="Password"
         minlength="8"
+        autocomplete="current-password"
         required
       >
 
@@ -157,152 +462,203 @@ h1{font-size:25px;letter-spacing:-.7px;margin:0}
     </p>
   </div>
 </div>
+
+<!-- NEXUS WEBSITE -->
+
 <div class="app">
+
   <aside class="rail">
     <div class="logo">N</div>
-    <button class="nav active" id="messagesNav" title="Messages" onclick="showPage('messages')">✉</button>
-    <button class="nav" id="browserNav" title="Browser" onclick="showPage('browser')">◎</button>
-    <button class="nav" title="Settings" onclick="alert('Settings will be added in a later version.')">⚙</button>
+
+    <button class="nav active" id="messagesNav"
+      title="Messages" onclick="showPage('messages')">✉</button>
+
+    <button class="nav" id="browserNav"
+      title="Browser" onclick="showPage('browser')">◎</button>
+
+    <button class="nav" title="Settings"
+      onclick="alert('Settings will be added in a later version.')">⚙</button>
   </aside>
+
   <aside class="sidebar">
     <div class="brand">nexus<span style="color:var(--accent)">.</span></div>
+
     <div id="messageSidebar">
       <div class="section-label">Messages</div>
-      <div class="person selected" onclick="selectFriend(this,'Alex')"><div class="avatar">A</div><div><strong>Alex</strong><small>Hey, how's it going?</small></div></div>
-      <div class="person" onclick="selectFriend(this,'Jordan')"><div class="avatar" style="background:#e8f5ee;color:#36845b">J</div><div><strong>Jordan</strong><small>Sent you a link</small></div></div>
-      <div class="person" onclick="selectFriend(this,'Friends Group')"><div class="avatar" style="background:#fff0e5;color:#b66a2b">F</div><div><strong>Friends Group</strong><small>Group conversation</small></div></div>
-      <div class="section-label" style="display:flex;justify-content:space-between;align-items:center">Your groups <button onclick="createGroup()" style="border:0;background:var(--soft);color:var(--accent);border-radius:8px;padding:4px 8px;font-weight:700">＋ New</button></div>
+
+      <div class="person selected" onclick="selectFriend(this,'Alex')">
+        <div class="avatar">A</div>
+        <div>
+          <strong>Alex</strong>
+          <small>Hey, how's it going?</small>
+        </div>
+      </div>
+
+      <div class="person" onclick="selectFriend(this,'Jordan')">
+        <div class="avatar" style="background:#e8f5ee;color:#36845b">J</div>
+        <div>
+          <strong>Jordan</strong>
+          <small>Sent you a link</small>
+        </div>
+      </div>
+
+      <div class="person" onclick="selectFriend(this,'Friends Group')">
+        <div class="avatar" style="background:#fff0e5;color:#b66a2b">F</div>
+        <div>
+          <strong>Friends Group</strong>
+          <small>Group conversation</small>
+        </div>
+      </div>
+
+      <div class="section-label"
+        style="display:flex;justify-content:space-between;align-items:center">
+        Your groups
+        <button onclick="createGroup()"
+          style="border:0;background:var(--soft);color:var(--accent);border-radius:8px;padding:4px 8px;font-weight:700">
+          ＋ New
+        </button>
+      </div>
+
       <div id="groupList"></div>
+
       <div class="section-label">Note</div>
-      <p class="muted" style="font-size:12px;line-height:1.6;padding:0 8px">These are sample conversations. Online messaging will be connected later.</p>
+      <p class="muted" style="font-size:12px;line-height:1.6;padding:0 8px">
+        Sample conversations. Online messaging will be connected later.
+      </p>
     </div>
+
     <div id="browserSidebar" class="hidden">
       <div class="section-label">Browser</div>
-      <p class="muted" style="font-size:13px;line-height:1.6;padding:0 8px">Search Google or enter a website address.</p>
+      <p class="muted" style="font-size:13px;line-height:1.6;padding:0 8px">
+        Search Google or enter a website address.
+      </p>
     </div>
   </aside>
+
   <main class="main">
+
     <section id="messagesPage">
-      <div class="top"><div><h1>Messages</h1><p class="muted" style="margin:6px 0 0">Keep in touch with your people.</p></div><span class="pill">Demo workspace</span></div>
+      <div class="top">
+        <div>
+          <h1>Messages</h1>
+          <p class="muted" style="margin:6px 0 0">
+            Keep in touch with your people.
+          </p>
+        </div>
+        <span class="pill">Demo workspace</span>
+      </div>
+
       <div class="chat-layout">
         <div class="panel chat-panel">
-          <div class="chat-head"><div class="avatar" id="chatAvatar">A</div><div style="flex:1"><h2 id="chatName">Alex</h2><p id="chatSub">Sample conversation · offline demo</p></div><button id="groupMembersBtn" class="pill hidden" onclick="showGroupMembers()">Members</button></div>
-          <div class="messages" id="messages">
-            <div class="msg"><small>Alex</small><div class="bubble">Hey! Welcome to our new chat.</div></div>
-            <div class="msg mine"><small>You</small><div class="bubble">This is my own website!</div></div>
-            <div class="msg"><small>Alex</small><div class="bubble">That's awesome. What are you building?</div></div>
+
+          <div class="chat-head">
+            <div class="avatar" id="chatAvatar">A</div>
+
+            <div style="flex:1">
+              <h2 id="chatName">Alex</h2>
+              <p id="chatSub">Sample conversation · offline demo</p>
+            </div>
+
+            <button id="groupMembersBtn" class="pill hidden"
+              onclick="showGroupMembers()">Members</button>
           </div>
-          <form class="composer" id="chatForm"><input id="chatInput" placeholder="Write a message..." autocomplete="off"><button class="primary">Send</button></form>
+
+          <div class="messages" id="messages">
+            <div class="msg">
+              <small>Alex</small>
+              <div class="bubble">Hey! Welcome to our new chat.</div>
+            </div>
+
+            <div class="msg mine">
+              <small>You</small>
+              <div class="bubble">This is my own website!</div>
+            </div>
+
+            <div class="msg">
+              <small>Alex</small>
+              <div class="bubble">That's awesome. What are you building?</div>
+            </div>
+          </div>
+
+          <form class="composer" id="chatForm">
+            <input id="chatInput" placeholder="Write a message..." autocomplete="off">
+            <button class="primary">Send</button>
+          </form>
         </div>
-        <div class="panel side-card"><h3>Your space</h3><p>This is the first version of Nexus. You can try the sample chat and explore the browser search.</p><p><strong>Next step:</strong> connect secure accounts and a database so messages can reach your friends on their devices.</p></div>
+
+        <div class="panel side-card">
+          <h3>Your space</h3>
+          <p>This is the first version of Nexus. You can try the sample chat and explore the browser search.</p>
+          <p><strong>Next step:</strong> connect real friends and online messaging.</p>
+        </div>
       </div>
     </section>
+
     <section id="browserPage" class="hidden">
-      <div class="top"><div><h1>Browser</h1><p class="muted" style="margin:6px 0 0">Search the web from Nexus.</p></div><span class="pill">Web search</span></div>
+      <div class="top">
+        <div>
+          <h1>Browser</h1>
+          <p class="muted" style="margin:6px 0 0">
+            Search the web from Nexus.
+          </p>
+        </div>
+        <span class="pill">Web search</span>
+      </div>
+
       <div class="panel">
-        <h2 style="font-size:18px;margin:0">Where would you like to go?</h2>
-        <form class="searchbar" id="searchForm"><input id="webInput" placeholder="Search Google or enter a website..." autocomplete="off"><button>Go</button></form>
+        <h2 style="font-size:18px;margin:0">
+          Where would you like to go?
+        </h2>
+
+        <form class="searchbar" id="searchForm">
+          <input id="webInput"
+            placeholder="Search Google or enter a website..."
+            autocomplete="off">
+          <button>Go</button>
+        </form>
+
         <div class="quicklinks">
           <button onclick="openSite('https://www.google.com')">Google</button>
           <button onclick="openSite('https://www.youtube.com')">YouTube</button>
           <button onclick="openSite('https://www.wikipedia.org')">Wikipedia</button>
         </div>
-        <div class="browser-note" style="margin-top:22px"><strong>How this demo browser works:</strong> searches open Google results in a new tab, and website addresses open in a new tab. Most major websites prevent being embedded directly inside another website, so this version uses normal browser tabs instead.</div>
+
+        <div class="browser-note" style="margin-top:22px">
+          <strong>How this demo browser works:</strong>
+          Searches open Google results in a new tab, and website addresses open in a new tab.
+        </div>
       </div>
     </section>
+
   </main>
 </div>
-<script>
-let currentFriend='Alex';
-let groups=[];
-let activeGroupId=null;
-function createGroup(){
-  const name=prompt('What should your group be called?');
-  if(!name || !name.trim()) return;
-  const cleanName=name.trim().slice(0,32);
-  const members=prompt('Add friends by typing their names, separated by commas. (Example: Alex, Jordan)','Alex, Jordan');
-  const memberList=(members||'').split(',').map(x=>x.trim()).filter(Boolean);
-  const group={id:Date.now(),name:cleanName,members:['You',...memberList],messages:[{sender:'Nexus',text:'Your group is ready! This is a local demo chat.'}]};
-  groups.push(group);
-  renderGroups();
-  openGroup(group.id);
-}
-function renderGroups(){
-  const list=document.getElementById('groupList');
-  list.innerHTML='';
-  groups.forEach(group=>{
-    const item=document.createElement('div');
-    item.className='person'+(activeGroupId===group.id?' selected':'');
-    item.innerHTML='<div class="avatar" style="background:#f0eaff;color:#7252b8">#</div><div style="min-width:0"><strong></strong><small></small></div>';
-    item.querySelector('strong').textContent=group.name;
-    item.querySelector('small').textContent=group.members.length+' members';
-    item.onclick=()=>openGroup(group.id);
-    list.appendChild(item);
-  });
-}
-function openGroup(id){
-  const group=groups.find(g=>g.id===id);if(!group)return;
-  activeGroupId=id;currentFriend=group.name;
-  document.querySelectorAll('.person').forEach(p=>p.classList.remove('selected'));
-  renderGroups();
-  document.getElementById('chatName').textContent=group.name;
-  document.getElementById('chatAvatar').textContent='#';
-  document.getElementById('chatSub').textContent=group.members.length+' members · local demo';
-  document.getElementById('groupMembersBtn').classList.remove('hidden');
-  const area=document.getElementById('messages');area.innerHTML='';
-  group.messages.forEach(m=>appendMessage(area,m.sender,m.text,m.sender==='You'));
-}
-function showGroupMembers(){
-  const group=groups.find(g=>g.id===activeGroupId);if(!group)return;
-  alert('Members of '+group.name+':\\n'+group.members.join('\\n'));
-}
-function appendMessage(area,sender,text,isMine){
-  const msg=document.createElement('div');msg.className='msg'+(isMine?' mine':'');
-  const label=document.createElement('small');label.textContent=sender;
-  const bubble=document.createElement('div');bubble.className='bubble';bubble.textContent=text;
-  msg.append(label,bubble);area.appendChild(msg);area.scrollTop=area.scrollHeight;
-}
-function showPage(page){
-  document.getElementById('messagesPage').classList.toggle('hidden',page!=='messages');
-  document.getElementById('browserPage').classList.toggle('hidden',page!=='browser');
-  document.getElementById('messageSidebar').classList.toggle('hidden',page!=='messages');
-  document.getElementById('browserSidebar').classList.toggle('hidden',page!=='browser');
-  document.getElementById('messagesNav').classList.toggle('active',page==='messages');
-  document.getElementById('browserNav').classList.toggle('active',page==='browser');
-}
-function selectFriend(el,name){
-  activeGroupId=null;
-  document.querySelectorAll('.person').forEach(p=>p.classList.remove('selected'));
-  el.classList.add('selected');currentFriend=name;
-  document.getElementById('chatName').textContent=name;
-  document.getElementById('chatAvatar').textContent=name.charAt(0);
-  document.getElementById('chatSub').textContent='Sample conversation · offline demo';
-  document.getElementById('groupMembersBtn').classList.add('hidden');
-  document.getElementById('messages').innerHTML='<div class="msg"><small>'+escapeHTML(name)+'</small><div class="bubble">This is a sample conversation with '+escapeHTML(name)+'.</div></div>';
-}
-function escapeHTML(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-document.getElementById('chatForm').addEventListener('submit',e=>{
-  e.preventDefault();const input=document.getElementById('chatInput');const value=input.value.trim();if(!value)return;
-  const area=document.getElementById('messages');
-  if(activeGroupId){
-    const group=groups.find(g=>g.id===activeGroupId);
-    if(group)group.messages.push({sender:'You',text:value});
-  }
-  appendMessage(area,'You',value,true);input.value='';
-});
-function openSite(value){
-  let url=value.trim();if(!url)return;
-  if(!/^https?:\/\//i.test(url))url='https://'+url;
-  try{const parsed=new URL(url);if(!['http:','https:'].includes(parsed.protocol))throw new Error();window.open(parsed.href,'_blank','noopener,noreferrer');}
-  catch(e){alert('Please enter a valid website address.');}
-}
-document.getElementById('searchForm').addEventListener('submit',e=>{
-  e.preventDefault();const q=document.getElementById('webInput').value.trim();if(!q)return;
-  if(/^https?:\/\//i.test(q)||(/^([a-z0-9-]+\.)+[a-z]{2,}([/?#].*)?$/i.test(q)))openSite(q);
-  else window.open('https://www.google.com/search?q='+encodeURIComponent(q),'_blank','noopener,noreferrer');
-});
+
+<!-- Load Supabase BEFORE our JavaScript -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  let isCreatingAccount = false;
+
+<script>
+
+// ==========================================
+// SUPABASE CONNECTION
+// ==========================================
+
+const SUPABASE_URL = 'https://aihbcshjjhqbpokekejg.supabase.co';
+
+// Replace this with your Supabase publishable key.
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_jfLiIfXde_9f0VKyRpCKdw_2VDqg0uS ';
+
+const nexusSupabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+
+// ==========================================
+// LOGIN AND REGISTRATION
+// ==========================================
+
+let isCreatingAccount = false;
 
 const authForm = document.getElementById('authForm');
 const authSwitch = document.getElementById('authSwitch');
@@ -312,26 +668,34 @@ const authDisplayName = document.getElementById('authDisplayName');
 const authError = document.getElementById('authError');
 
 function showNexus() {
-  document.getElementById('authScreen').classList.add('hidden');
-  document.querySelector('.app').style.display = 'grid';
+  document.body.classList.add('authenticated');
 }
 
 function showLogin() {
-  document.getElementById('authScreen').classList.remove('hidden');
-  document.querySelector('.app').style.display = 'none';
+  document.body.classList.remove('authenticated');
 }
 
 authSwitch.addEventListener('click', () => {
   isCreatingAccount = !isCreatingAccount;
   authError.textContent = '';
 
-  authSubmit.textContent = isCreatingAccount ? 'Create Account' : 'Log In';
+  authSubmit.textContent = isCreatingAccount
+    ? 'Create Account'
+    : 'Log In';
+
   authDescription.textContent = isCreatingAccount
     ? 'Create your Nexus account.'
     : 'Welcome back! Log in to your account.';
 
-  authDisplayName.classList.toggle('hidden', !isCreatingAccount);
+  authDisplayName.classList.toggle(
+    'hidden',
+    !isCreatingAccount
+  );
+
   authDisplayName.required = false;
+
+  document.getElementById('authPassword').autocomplete =
+    isCreatingAccount ? 'new-password' : 'current-password';
 
   authSwitch.textContent = isCreatingAccount
     ? 'Log in'
@@ -344,8 +708,8 @@ authForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   authError.textContent = '';
 
-  const username = document.getElementById('authUsername').value
-    .trim().toLowerCase();
+  const username = document.getElementById('authUsername')
+    .value.trim().toLowerCase();
 
   const password = document.getElementById('authPassword').value;
   const displayName = authDisplayName.value.trim();
@@ -356,11 +720,16 @@ authForm.addEventListener('submit', async (event) => {
     return;
   }
 
+  if (password.length < 8) {
+    authError.textContent =
+      'Your password must be at least 8 characters.';
+    return;
+  }
+
   authSubmit.disabled = true;
   authSubmit.textContent = 'Please wait...';
 
   try {
-    // Internal email used by Supabase; users log in with their username.
     const internalEmail =
       username + '@aihbcshjjhqbpokekejg.supabase.co';
 
@@ -390,34 +759,302 @@ authForm.addEventListener('submit', async (event) => {
       showNexus();
     } else {
       authError.textContent =
-        'Account created, but no session was returned. Check your Supabase email confirmation settings.';
+        'No login session was returned. Check your Supabase confirmation settings.';
     }
+
   } catch (error) {
-    authError.textContent = error.message || 'Something went wrong.';
+    authError.textContent =
+      error.message || 'Something went wrong.';
   } finally {
     authSubmit.disabled = false;
-    authSubmit.textContent = isCreatingAccount ? 'Create Account' : 'Log In';
+    authSubmit.textContent = isCreatingAccount
+      ? 'Create Account'
+      : 'Log In';
   }
 });
 
-// Restore the login session when someone returns to Nexus.
+
+// Restore an existing login session.
+
 nexusSupabase.auth.getSession().then(({ data, error }) => {
   if (error) {
     authError.textContent = error.message;
     return;
   }
 
-  if (data.session) showNexus();
-  else showLogin();
+  if (data.session) {
+    showNexus();
+  } else {
+    showLogin();
+  }
 });
+
+
+// ==========================================
+// GROUP CHATS (LOCAL DEMO)
+// ==========================================
+
+let currentFriend = 'Alex';
+let groups = [];
+let activeGroupId = null;
+
+function createGroup() {
+  const name = prompt('What should your group be called?');
+  if (!name || !name.trim()) return;
+
+  const cleanName = name.trim().slice(0,32);
+
+  const members = prompt(
+    'Add friends by typing their names, separated by commas.',
+    'Alex, Jordan'
+  );
+
+  const memberList = (members || '')
+    .split(',')
+    .map(x => x.trim())
+    .filter(Boolean);
+
+  const group = {
+    id: Date.now(),
+    name: cleanName,
+    members: ['You', ...memberList],
+    messages: [
+      {sender:'Nexus',text:'Your group is ready! This is a local demo chat.'}
+    ]
+  };
+
+  groups.push(group);
+  renderGroups();
+  openGroup(group.id);
+}
+
+function renderGroups() {
+  const list = document.getElementById('groupList');
+  list.innerHTML = '';
+
+  groups.forEach(group => {
+    const item = document.createElement('div');
+
+    item.className = 'person' +
+      (activeGroupId === group.id ? ' selected' : '');
+
+    item.innerHTML =
+      '<div class="avatar" style="background:#f0eaff;color:#7252b8">#</div>' +
+      '<div style="min-width:0"><strong></strong><small></small></div>';
+
+    item.querySelector('strong').textContent = group.name;
+    item.querySelector('small').textContent =
+      group.members.length + ' members';
+
+    item.onclick = () => openGroup(group.id);
+
+    list.appendChild(item);
+  });
+}
+
+function openGroup(id) {
+  const group = groups.find(g => g.id === id);
+  if (!group) return;
+
+  activeGroupId = id;
+  currentFriend = group.name;
+
+  document.querySelectorAll('.person').forEach(p =>
+    p.classList.remove('selected')
+  );
+
+  renderGroups();
+
+  document.getElementById('chatName').textContent = group.name;
+  document.getElementById('chatAvatar').textContent = '#';
+
+  document.getElementById('chatSub').textContent =
+    group.members.length + ' members · local demo';
+
+  document.getElementById('groupMembersBtn')
+    .classList.remove('hidden');
+
+  const area = document.getElementById('messages');
+  area.innerHTML = '';
+
+  group.messages.forEach(m =>
+    appendMessage(area, m.sender, m.text, m.sender === 'You')
+  );
+}
+
+function showGroupMembers() {
+  const group = groups.find(g => g.id === activeGroupId);
+  if (!group) return;
+
+  alert(
+    'Members of ' + group.name + ':\n' +
+    group.members.join('\n')
+  );
+}
+
+function appendMessage(area, sender, text, isMine) {
+  const msg = document.createElement('div');
+  msg.className = 'msg' + (isMine ? ' mine' : '');
+
+  const label = document.createElement('small');
+  label.textContent = sender;
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.textContent = text;
+
+  msg.append(label, bubble);
+  area.appendChild(msg);
+  area.scrollTop = area.scrollHeight;
+}
+
+
+// ==========================================
+// NAVIGATION
+// ==========================================
+
+function showPage(page) {
+  document.getElementById('messagesPage')
+    .classList.toggle('hidden', page !== 'messages');
+
+  document.getElementById('browserPage')
+    .classList.toggle('hidden', page !== 'browser');
+
+  document.getElementById('messageSidebar')
+    .classList.toggle('hidden', page !== 'messages');
+
+  document.getElementById('browserSidebar')
+    .classList.toggle('hidden', page !== 'browser');
+
+  document.getElementById('messagesNav')
+    .classList.toggle('active', page === 'messages');
+
+  document.getElementById('browserNav')
+    .classList.toggle('active', page === 'browser');
+}
+
+function selectFriend(el, name) {
+  activeGroupId = null;
+
+  document.querySelectorAll('.person').forEach(p =>
+    p.classList.remove('selected')
+  );
+
+  el.classList.add('selected');
+  currentFriend = name;
+
+  document.getElementById('chatName').textContent = name;
+  document.getElementById('chatAvatar').textContent = name.charAt(0);
+
+  document.getElementById('chatSub').textContent =
+    'Sample conversation · offline demo';
+
+  document.getElementById('groupMembersBtn')
+    .classList.add('hidden');
+
+  document.getElementById('messages').innerHTML =
+    '<div class="msg"><small>' +
+    escapeHTML(name) +
+    '</small><div class="bubble">This is a sample conversation with ' +
+    escapeHTML(name) +
+    '.</div></div>';
+}
+
+function escapeHTML(s) {
+  return s.replace(/[&<>"']/g, c => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[c]));
+}
+
+
+// ==========================================
+// LOCAL DEMO MESSAGING
+// ==========================================
+
+document.getElementById('chatForm').addEventListener('submit', e => {
+  e.preventDefault();
+
+  const input = document.getElementById('chatInput');
+  const value = input.value.trim();
+
+  if (!value) return;
+
+  const area = document.getElementById('messages');
+
+  if (activeGroupId) {
+    const group = groups.find(g => g.id === activeGroupId);
+
+    if (group) {
+      group.messages.push({
+        sender:'You',
+        text:value
+      });
+    }
+  }
+
+  appendMessage(area, 'You', value, true);
+  input.value = '';
+});
+
+
+// ==========================================
+// BROWSER
+// ==========================================
+
+function openSite(value) {
+  let url = value.trim();
+  if (!url) return;
+
+  if (!/^https?:\/\//i.test(url)) {
+    url = 'https://' + url;
+  }
+
+  try {
+    const parsed = new URL(url);
+
+    if (!['http:','https:'].includes(parsed.protocol)) {
+      throw new Error();
+    }
+
+    window.open(
+      parsed.href,
+      '_blank',
+      'noopener,noreferrer'
+    );
+
+  } catch(e) {
+    alert('Please enter a valid website address.');
+  }
+}
+
+document.getElementById('searchForm')
+  .addEventListener('submit', e => {
+    e.preventDefault();
+
+    const q = document.getElementById('webInput')
+      .value.trim();
+
+    if (!q) return;
+
+    if (
+      /^https?:\/\//i.test(q) ||
+      /^([a-z0-9-]+\.)+[a-z]{2,}([/?#].*)?$/i.test(q)
+    ) {
+      openSite(q);
+    } else {
+      window.open(
+        'https://www.google.com/search?q=' +
+        encodeURIComponent(q),
+        '_blank',
+        'noopener,noreferrer'
+      );
+    }
+  });
+
 </script>
-  const SUPABASE_URL = 'https://aihbcshjjhqbpokekejg.supabase.co';
-
-const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_jfLiIfXde_9f0VKyRpCKdw_2VDqg0uS';
-
-const nexusSupabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
-);
 </body>
 </html>
