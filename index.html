@@ -4,6 +4,67 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nexus — Messages & Browser</title>
+  .auth-screen {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: var(--bg);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 410px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 32px;
+}
+
+.auth-card h1 {
+  margin-bottom: 8px;
+}
+
+.auth-card p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 13px;
+  margin: 9px 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.auth-card button {
+  padding: 12px;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.auth-submit {
+  width: 100%;
+  background: var(--accent);
+  color: white;
+  margin-top: 12px;
+}
+
+.auth-switch {
+  background: transparent;
+  color: var(--accent);
+}
+
+.auth-error {
+  color: #d33;
+  font-size: 13px;
+}
+.app {
+  display: none;
+}
 <style>
 :root{--bg:#f5f6f8;--panel:#fff;--ink:#17191f;--muted:#777d89;--line:#e8eaf0;--accent:#525fe1;--soft:#eef0ff}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px Inter,system-ui,-apple-system,Segoe UI,sans-serif}
@@ -51,6 +112,51 @@ h1{font-size:25px;letter-spacing:-.7px;margin:0}
 </style>
 </head>
 <body>
+  <div class="auth-screen" id="authScreen">
+  <div class="auth-card">
+    <h1>nexus<span style="color:var(--accent)">.</span></h1>
+    <p id="authDescription">Welcome back! Log in to your account.</p>
+
+    <form id="authForm">
+      <input
+        id="authUsername"
+        placeholder="Username"
+        minlength="3"
+        maxlength="20"
+        pattern="[a-zA-Z0-9_]+"
+        required
+      >
+
+      <input
+        id="authPassword"
+        type="password"
+        placeholder="Password"
+        minlength="8"
+        required
+      >
+
+      <input
+        id="authDisplayName"
+        placeholder="Display name (optional)"
+        class="hidden"
+        maxlength="40"
+      >
+
+      <button class="auth-submit" id="authSubmit" type="submit">
+        Log In
+      </button>
+    </form>
+
+    <p id="authError" class="auth-error"></p>
+
+    <p>
+      Don't have an account?
+      <button class="auth-switch" id="authSwitch" type="button">
+        Create one
+      </button>
+    </p>
+  </div>
+</div>
 <div class="app">
   <aside class="rail">
     <div class="logo">N</div>
