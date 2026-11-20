@@ -302,6 +302,114 @@ document.getElementById('searchForm').addEventListener('submit',e=>{
   else window.open('https://www.google.com/search?q='+encodeURIComponent(q),'_blank','noopener,noreferrer');
 });
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  let isCreatingAccount = false;
+
+const authForm = document.getElementById('authForm');
+const authSwitch = document.getElementById('authSwitch');
+const authSubmit = document.getElementById('authSubmit');
+const authDescription = document.getElementById('authDescription');
+const authDisplayName = document.getElementById('authDisplayName');
+const authError = document.getElementById('authError');
+
+function showNexus() {
+  document.getElementById('authScreen').classList.add('hidden');
+  document.querySelector('.app').style.display = 'grid';
+}
+
+function showLogin() {
+  document.getElementById('authScreen').classList.remove('hidden');
+  document.querySelector('.app').style.display = 'none';
+}
+
+authSwitch.addEventListener('click', () => {
+  isCreatingAccount = !isCreatingAccount;
+  authError.textContent = '';
+
+  authSubmit.textContent = isCreatingAccount ? 'Create Account' : 'Log In';
+  authDescription.textContent = isCreatingAccount
+    ? 'Create your Nexus account.'
+    : 'Welcome back! Log in to your account.';
+
+  authDisplayName.classList.toggle('hidden', !isCreatingAccount);
+  authDisplayName.required = false;
+
+  authSwitch.textContent = isCreatingAccount
+    ? 'Log in'
+    : 'Create one';
+
+  authForm.reset();
+});
+
+authForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  authError.textContent = '';
+
+  const username = document.getElementById('authUsername').value
+    .trim().toLowerCase();
+
+  const password = document.getElementById('authPassword').value;
+  const displayName = authDisplayName.value.trim();
+
+  if (!/^[a-z0-9_]{3,20}$/.test(username)) {
+    authError.textContent =
+      'Use 3–20 characters: letters, numbers, or underscores.';
+    return;
+  }
+
+  authSubmit.disabled = true;
+  authSubmit.textContent = 'Please wait...';
+
+  try {
+    // Internal email used by Supabase; users log in with their username.
+    const internalEmail =
+      username + '@aihbcshjjhqbpokekejg.supabase.co';
+
+    let result;
+
+    if (isCreatingAccount) {
+      result = await nexusSupabase.auth.signUp({
+        email: internalEmail,
+        password: password,
+        options: {
+          data: {
+            username: username,
+            display_name: displayName || username
+          }
+        }
+      });
+    } else {
+      result = await nexusSupabase.auth.signInWithPassword({
+        email: internalEmail,
+        password: password
+      });
+    }
+
+    if (result.error) throw result.error;
+
+    if (result.data.session) {
+      showNexus();
+    } else {
+      authError.textContent =
+        'Account created, but no session was returned. Check your Supabase email confirmation settings.';
+    }
+  } catch (error) {
+    authError.textContent = error.message || 'Something went wrong.';
+  } finally {
+    authSubmit.disabled = false;
+    authSubmit.textContent = isCreatingAccount ? 'Create Account' : 'Log In';
+  }
+});
+
+// Restore the login session when someone returns to Nexus.
+nexusSupabase.auth.getSession().then(({ data, error }) => {
+  if (error) {
+    authError.textContent = error.message;
+    return;
+  }
+
+  if (data.session) showNexus();
+  else showLogin();
+});
 </script>
   const SUPABASE_URL = 'https://aihbcshjjhqbpokekejg.supabase.co';
 
